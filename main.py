@@ -42,6 +42,38 @@ def overlay_transparent(background, overlay, x, y):
 
     return background
 
+
+def image_resize(image, width=None, height=None, inter=cv.INTER_AREA):
+    # initialize the dimensions of the image to be resized and
+    # grab the image size
+    dim = None
+    (h, w) = image.shape[:2]
+
+    # if both the width and height are None, then return the
+    # original image
+    if width is None and height is None:
+        return image
+
+    # check to see if the width is None
+    if width is None:
+        # calculate the ratio of the height and construct the
+        # dimensions
+        r = height / float(h)
+        dim = (int(w * r), height)
+
+    # otherwise, the height is None
+    else:
+        # calculate the ratio of the width and construct the
+        # dimensions
+        r = width / float(w)
+        dim = (width, int(h * r))
+
+    # resize the image
+    resized = cv.resize(image, dim, interpolation=inter)
+
+    # return the resized image
+    return resized
+
 if __name__ == "__main__":
     cap = cv.VideoCapture(0)
 
@@ -51,7 +83,7 @@ if __name__ == "__main__":
     sticker = cv.imread("flowers.png", cv.IMREAD_UNCHANGED)
     print(sticker.shape)
     height, width, _ = sticker.shape
-
+    ratio = height / width
     # bgr = sticker[:, :, :3]  # Channels 0..2
     # gray = cv.cvtColor(bgr, cv.COLOR_BGR2GRAY)
     # bgr = cv.cvtColor(gray, cv.COLOR_GRAY2BGR)
@@ -66,6 +98,10 @@ if __name__ == "__main__":
 
 
         faces = detector(gray)
+        flower_stickers = []
+        for x in range(len(faces)):
+            flower_stickers.append(sticker)
+        i = 0
         for face in faces:
             x1 = face.left()
             y1 = face.top()
@@ -78,15 +114,19 @@ if __name__ == "__main__":
             for n in range(0, 68):
                 x = landmarks.part(n).x
                 y = landmarks.part(n).y
-                cv.circle(frame, (x, y), 4, (3*n, 3*n, 3*n), -1)
+                # cv.circle(frame, (x, y), 4, (3*n, 3*n, 3*n), -1)
             
-            x = landmarks.part(18).x
-            y = landmarks.part(18).y
+            x = landmarks.part(31).x
+            y = landmarks.part(31).y
 
-            overlay_transparent(frame, sticker, x - height/2, y - )
+            xx = landmarks.part(1).y - landmarks.part(17).y
+            flower_stickers[i] = image_resize(sticker, width=xx*7)
+            st_height, st_width, _ = flower_stickers[i].shape
+            overlay_transparent(frame, flower_stickers[i], max(0, int(x - st_width//2)), max(0, int(y - st_height//2 -100)))
 
             # weighted = cv.addWeighted(frame[0:0 + height, 0:0 + width, :], alpha, sticker[0:height, 0:width, :], 1 - alpha, 0)
             # frame[0:0 + height, 0:0 + width, :] = weighted
+            i += 1
         
         cv.imshow("Frame", frame)
 
