@@ -1,6 +1,3 @@
-#not tried
-#for face detection then landmark detection
-
 import cv2 as cv
 import numpy as np
 import dlib
@@ -74,34 +71,108 @@ def image_resize(image, width=None, height=None, inter=cv.INTER_AREA):
     # return the resized image
     return resized
 
+def placeFlower(landmarks, frame):
+    sticker = cv.imread("flowers.png", cv.IMREAD_UNCHANGED)
+    height, width, _ = sticker.shape
+    ratio = height / width
+
+    xx = abs(landmarks.part(1).y - landmarks.part(17).y)
+    sticker = image_resize(sticker, width=xx*7)
+    st_height, st_width, _ = sticker.shape
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2)), max(0, int(y - st_height//2 -150)))
+    
+def placeHearts(landmarks, frame):
+    sticker = cv.imread("hearts.png", cv.IMREAD_UNCHANGED)
+    height, width, _ = sticker.shape
+    ratio = height / width
+
+    xx = abs(landmarks.part(1).y - landmarks.part(17).y)
+    sticker = image_resize(sticker, width=xx*7)
+    st_height, st_width, _ = sticker.shape
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 10)), max(0, int(y - st_height//2 - 200)))
+
+def placeLips(landmarks, frame):
+    sticker = cv.imread("lips.png", cv.IMREAD_UNCHANGED)
+    height, width, _ = sticker.shape
+    ratio = height / width
+
+    xx = abs(landmarks.part(55).y - landmarks.part(49).y)
+
+    sticker = image_resize(sticker, width=xx*5)
+    st_height, st_width, _ = sticker.shape
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 30)))
+
+def placeGlasses(landmarks, frame):
+    sticker = cv.imread("glasses.png", cv.IMREAD_UNCHANGED)
+    height, width, _ = sticker.shape
+    ratio = height / width
+
+    xx = abs(landmarks.part(27).y - landmarks.part(18).y)
+
+    sticker = image_resize(sticker, width=xx* 8)
+    st_height, st_width, _ = sticker.shape
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 - 90)))
+
+def placePigNose(landmarks, frame):
+    sticker = cv.imread("pig.png", cv.IMREAD_UNCHANGED)
+    height, width, _ = sticker.shape
+    ratio = height / width
+
+    xx = abs(landmarks.part(36).y - landmarks.part(32).y)
+
+    sticker = image_resize(sticker, width=xx)
+    st_height, st_width, _ = sticker.shape
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 15)), max(0, int(y - st_height//2 - 10)))
+
+def placeDogNose(landmarks, frame):
+    sticker = cv.imread("dogNose.png", cv.IMREAD_UNCHANGED)
+    height, width, _ = sticker.shape
+    ratio = height / width
+
+    xx = abs(landmarks.part(36).y - landmarks.part(32).y)
+
+    sticker = image_resize(sticker, width=xx)
+    st_height, st_width, _ = sticker.shape
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 15)), max(0, int(y - st_height//2 - 10)))
+
+def placeDogEars(landmarks, frame):
+    sticker = cv.imread("dogEars.png", cv.IMREAD_UNCHANGED)
+    height, width, _ = sticker.shape
+    ratio = height / width
+
+    xx = abs(landmarks.part(1).y - landmarks.part(17).y)
+    sticker = image_resize(sticker, width=xx*6)
+    st_height, st_width, _ = sticker.shape
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 -200)))
+
+def placeDog(landmarks, frame):
+    placeDogNose(landmarks, frame)
+    placeDogEars(landmarks, frame)
+
+def placeBeard(landmarks, face):
+    sticker = cv.imread("beard.png", cv.IMREAD_UNCHANGED)
+    height, width, _ = sticker.shape
+    ratio = height / width
+
+    xx = abs(landmarks.part(15).y - landmarks.part(3).y)
+    sticker = image_resize(sticker, width=xx*4)
+    st_height, st_width, _ = sticker.shape
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 100)))
+
 if __name__ == "__main__":
     cap = cv.VideoCapture(0)
 
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 
-    sticker = cv.imread("flowers.png", cv.IMREAD_UNCHANGED)
-    print(sticker.shape)
-    height, width, _ = sticker.shape
-    ratio = height / width
-    # bgr = sticker[:, :, :3]  # Channels 0..2
-    # gray = cv.cvtColor(bgr, cv.COLOR_BGR2GRAY)
-    # bgr = cv.cvtColor(gray, cv.COLOR_GRAY2BGR)
-    # alpha = sticker[:, :, 3]  # Channel 3
-    # result = np.dstack([bgr, alpha])  # Add the alpha channel
+    
 
     alpha = 0.5
     while True:
         _, frame = cap.read()
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-        # print(frame[0: 0 + height, 0: 0 + width, :].shape)
-
-
         faces = detector(gray)
         flower_stickers = []
-        for x in range(len(faces)):
-            flower_stickers.append(sticker)
-        i = 0
         for face in faces:
             x1 = face.left()
             y1 = face.top()
@@ -119,18 +190,18 @@ if __name__ == "__main__":
             x = landmarks.part(31).x
             y = landmarks.part(31).y
 
-            xx = landmarks.part(1).y - landmarks.part(17).y
-            flower_stickers[i] = image_resize(sticker, width=xx*7)
-            st_height, st_width, _ = flower_stickers[i].shape
-            overlay_transparent(frame, flower_stickers[i], max(0, int(x - st_width//2)), max(0, int(y - st_height//2 -100)))
+            # placeFlower(landmarks, frame)
+            # placeLips(landmarks, frame)
+            # placeGlasses(landmarks, frame)
+            # placeHearts(landmarks, frame)
+            # placePigNose(landmarks, frame)
+            # placeDog(landmarks, frame)
+            placeBeard(landmarks, face)
 
-            # weighted = cv.addWeighted(frame[0:0 + height, 0:0 + width, :], alpha, sticker[0:height, 0:width, :], 1 - alpha, 0)
-            # frame[0:0 + height, 0:0 + width, :] = weighted
-            i += 1
-        
         cv.imshow("Frame", frame)
 
         key = cv.waitKey(1)
         if key == 27:
             break
     pass
+
