@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 import dlib
-
+import sys
 
 def overlay_transparent(background, overlay, x, y):
 
@@ -160,6 +160,9 @@ def placeBeard(landmarks, face):
     overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 100)))
 
 if __name__ == "__main__":
+    if (len(sys.argv) == 1) : 
+        exit()
+
     cap = cv.VideoCapture(0)
 
     detector = dlib.get_frontal_face_detector()
@@ -190,13 +193,28 @@ if __name__ == "__main__":
             x = landmarks.part(31).x
             y = landmarks.part(31).y
 
-            # placeFlower(landmarks, frame)
+            if (sys.argv[1] == "flower"):
+                placeFlower(landmarks, frame)
+            elif (sys.argv[1] == "lips"):
+                placeLips(landmarks, frame)
+            elif (sys.argv[1] == "hearts"):
+                placeHearts(landmarks, frame)
+            elif (sys.argv[1] == "pig"):
+                placePigNose(landmarks, frame)
+            elif (sys.argv[1] == "dog"):
+                placeDog(landmarks, frame)
+            elif (sys.argv[1] == "beard"):
+                placeBeard(landmarks, face)
+            elif (sys.argv[1] == "glasses"):
+                placeGlasses(landmarks, frame)
+            
+            
             # placeLips(landmarks, frame)
             # placeGlasses(landmarks, frame)
             # placeHearts(landmarks, frame)
             # placePigNose(landmarks, frame)
             # placeDog(landmarks, frame)
-            placeBeard(landmarks, face)
+            # placeBeard(landmarks, face)
 
         cv.imshow("Frame", frame)
 
