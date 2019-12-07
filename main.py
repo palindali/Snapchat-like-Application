@@ -3,6 +3,7 @@ import numpy as np
 import dlib
 import sys
 
+
 def overlay_transparent(background, overlay, x, y):
 
     background_width = background.shape[1]
@@ -71,96 +72,106 @@ def image_resize(image, width=None, height=None, inter=cv.INTER_AREA):
     # return the resized image
     return resized
 
+
 def placeFlower(landmarks, frame):
     sticker = cv.imread("flowers.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
-    ratio = height / width
 
     xx = abs(landmarks.part(1).y - landmarks.part(17).y)
     sticker = image_resize(sticker, width=xx*7)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(0, int(x - st_width//2)), max(0, int(y - st_height//2 -150)))
-    
+    overlay_transparent(frame, sticker, max(
+        0, int(x - st_width//2)), max(0, int(y - st_height//2 - 150)))
+
+
 def placeHearts(landmarks, frame):
     sticker = cv.imread("hearts.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
-    ratio = height / width
 
     xx = abs(landmarks.part(1).y - landmarks.part(17).y)
     sticker = image_resize(sticker, width=xx*7)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 10)), max(0, int(y - st_height//2 - 200)))
+    overlay_transparent(frame, sticker, max(
+        0, int(x - st_width//2 + 10)), max(0, int(y - st_height//2 - 200)))
+
 
 def placeLips(landmarks, frame):
     sticker = cv.imread("lips.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
-    ratio = height / width
 
     xx = abs(landmarks.part(55).y - landmarks.part(49).y)
 
     sticker = image_resize(sticker, width=xx*5)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 30)))
+    overlay_transparent(frame, sticker, max(
+        0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 30)))
+
 
 def placeGlasses(landmarks, frame):
     sticker = cv.imread("glasses.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
-    ratio = height / width
 
     xx = abs(landmarks.part(27).y - landmarks.part(18).y)
 
-    sticker = image_resize(sticker, width=xx* 8)
+    sticker = image_resize(sticker, width=xx * 8)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 - 90)))
+    overlay_transparent(frame, sticker, max(
+        0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 - 90)))
+
 
 def placePigNose(landmarks, frame):
     sticker = cv.imread("pig.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
-    ratio = height / width
 
     xx = abs(landmarks.part(36).y - landmarks.part(32).y)
 
     sticker = image_resize(sticker, width=xx)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 15)), max(0, int(y - st_height//2 - 10)))
+    overlay_transparent(frame, sticker, max(
+        0, int(x - st_width//2 + 15)), max(0, int(y - st_height//2 - 10)))
+
 
 def placeDogNose(landmarks, frame):
     sticker = cv.imread("dogNose.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
-    ratio = height / width
 
     xx = abs(landmarks.part(36).y - landmarks.part(32).y)
 
     sticker = image_resize(sticker, width=xx)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 15)), max(0, int(y - st_height//2 - 10)))
+    overlay_transparent(frame, sticker, max(
+        0, int(x - st_width//2 + 15)), max(0, int(y - st_height//2 - 10)))
+
 
 def placeDogEars(landmarks, frame):
     sticker = cv.imread("dogEars.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
-    ratio = height / width
 
     xx = abs(landmarks.part(1).y - landmarks.part(17).y)
     sticker = image_resize(sticker, width=xx*6)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 -200)))
+    overlay_transparent(frame, sticker, max(
+        0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 - 200)))
+
 
 def placeDog(landmarks, frame):
     placeDogNose(landmarks, frame)
     placeDogEars(landmarks, frame)
 
+
 def placeBeard(landmarks, face):
     sticker = cv.imread("beard.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
-    ratio = height / width
 
     xx = abs(landmarks.part(15).y - landmarks.part(3).y)
     sticker = image_resize(sticker, width=xx*4)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 100)))
+    overlay_transparent(frame, sticker, max(
+        0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 100)))
+
 
 if __name__ == "__main__":
-    if (len(sys.argv) == 1) : 
+    if (len(sys.argv) != 2):
         exit()
 
     cap = cv.VideoCapture(0)
@@ -168,9 +179,6 @@ if __name__ == "__main__":
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 
-    
-
-    alpha = 0.5
     while True:
         _, frame = cap.read()
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
@@ -184,12 +192,12 @@ if __name__ == "__main__":
             # cv.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
 
             landmarks = predictor(gray, face)
-            
+
             for n in range(0, 68):
                 x = landmarks.part(n).x
                 y = landmarks.part(n).y
                 # cv.circle(frame, (x, y), 4, (3*n, 3*n, 3*n), -1)
-            
+
             x = landmarks.part(31).x
             y = landmarks.part(31).y
 
@@ -207,8 +215,7 @@ if __name__ == "__main__":
                 placeBeard(landmarks, face)
             elif (sys.argv[1] == "glasses"):
                 placeGlasses(landmarks, frame)
-            
-            
+
             # placeLips(landmarks, frame)
             # placeGlasses(landmarks, frame)
             # placeHearts(landmarks, frame)
@@ -222,4 +229,3 @@ if __name__ == "__main__":
         if key == 27:
             break
     pass
-
