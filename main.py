@@ -77,19 +77,18 @@ def placeFlower(landmarks, frame):
     sticker = cv.imread("flowers.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    xx = abs(landmarks.part(1).y - landmarks.part(17).y)
-    sticker = image_resize(sticker, width=xx*7)
+    rep_width = abs(landmarks.part(1).y - landmarks.part(17).y)
+    sticker = image_resize(sticker, width=rep_width*7)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(
-        0, int(x - st_width//2)), max(0, int(y - st_height//2 - 150)))
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2)), max(0, int(y - st_height//2 - 150)))
 
 
 def placeHearts(landmarks, frame):
     sticker = cv.imread("hearts.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    xx = abs(landmarks.part(1).y - landmarks.part(17).y)
-    sticker = image_resize(sticker, width=xx*7)
+    rep_width = abs(landmarks.part(1).y - landmarks.part(17).y)
+    sticker = image_resize(sticker, width=rep_width*7)
     st_height, st_width, _ = sticker.shape
     overlay_transparent(frame, sticker, max(
         0, int(x - st_width//2 + 10)), max(0, int(y - st_height//2 - 200)))
@@ -99,9 +98,9 @@ def placeLips(landmarks, frame):
     sticker = cv.imread("lips.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    xx = abs(landmarks.part(55).y - landmarks.part(49).y)
+    rep_width = abs(landmarks.part(55).y - landmarks.part(49).y)
 
-    sticker = image_resize(sticker, width=xx*5)
+    sticker = image_resize(sticker, width=rep_width*5)
     st_height, st_width, _ = sticker.shape
     overlay_transparent(frame, sticker, max(
         0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 30)))
@@ -111,9 +110,9 @@ def placeGlasses(landmarks, frame):
     sticker = cv.imread("glasses.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    xx = abs(landmarks.part(27).y - landmarks.part(18).y)
+    rep_width = abs(landmarks.part(27).y - landmarks.part(18).y)
 
-    sticker = image_resize(sticker, width=xx * 8)
+    sticker = image_resize(sticker, width=rep_width * 8)
     st_height, st_width, _ = sticker.shape
     overlay_transparent(frame, sticker, max(
         0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 - 90)))
@@ -123,9 +122,9 @@ def placePigNose(landmarks, frame):
     sticker = cv.imread("pig.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    xx = abs(landmarks.part(36).y - landmarks.part(32).y)
+    rep_width = abs(landmarks.part(36).y - landmarks.part(32).y)
 
-    sticker = image_resize(sticker, width=xx)
+    sticker = image_resize(sticker, width=rep_width)
     st_height, st_width, _ = sticker.shape
     overlay_transparent(frame, sticker, max(
         0, int(x - st_width//2 + 15)), max(0, int(y - st_height//2 - 10)))
@@ -135,9 +134,9 @@ def placeDogNose(landmarks, frame):
     sticker = cv.imread("dogNose.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    xx = abs(landmarks.part(36).y - landmarks.part(32).y)
+    rep_width = abs(landmarks.part(36).y - landmarks.part(32).y)
 
-    sticker = image_resize(sticker, width=xx)
+    sticker = image_resize(sticker, width=rep_width)
     st_height, st_width, _ = sticker.shape
     overlay_transparent(frame, sticker, max(
         0, int(x - st_width//2 + 15)), max(0, int(y - st_height//2 - 10)))
@@ -147,8 +146,8 @@ def placeDogEars(landmarks, frame):
     sticker = cv.imread("dogEars.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    xx = abs(landmarks.part(1).y - landmarks.part(17).y)
-    sticker = image_resize(sticker, width=xx*6)
+    rep_width = abs(landmarks.part(1).y - landmarks.part(17).y)
+    sticker = image_resize(sticker, width=rep_width*6)
     st_height, st_width, _ = sticker.shape
     overlay_transparent(frame, sticker, max(
         0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 - 200)))
@@ -163,11 +162,10 @@ def placeBeard(landmarks, face):
     sticker = cv.imread("beard.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    xx = abs(landmarks.part(15).y - landmarks.part(3).y)
-    sticker = image_resize(sticker, width=xx*4)
+    rep_width = abs(landmarks.part(15).y - landmarks.part(3).y)
+    sticker = image_resize(sticker, width=rep_width*4)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(
-        0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 100)))
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 100)))
 
 
 if __name__ == "__main__":
