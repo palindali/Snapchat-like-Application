@@ -125,7 +125,17 @@ def placeLips(landmarks, frame):
     st_height, st_width, _ = sticker.shape
     x = abs( landmarks.part(63-1).x )
     y = landmarks.part(67 - 1).y
-    overlay_transparent(frame, sticker, max(0, int(x - st_width//2)), max(0, int(y - st_height//2)))
+
+    st_x = x - st_width//2
+    st_y = y - st_height//2
+    if st_x < 0:
+        sticker = sticker[:, 0 - st_x:st_width]
+        st_x = 0
+    if st_y < 0:
+        sticker = sticker[0 - st_y:st_height, :]
+        st_y = 0
+
+    overlay_transparent(frame, sticker, max(0, st_x), max(0, st_y))
 
 def placeGlasses(landmarks, frame):
     sticker = cv.imread("glasses.png", cv.IMREAD_UNCHANGED)
@@ -138,40 +148,98 @@ def placeGlasses(landmarks, frame):
     st_height, st_width, _ = sticker.shape
     x = landmarks.part(28 - 1).x
     y = landmarks.part(28 - 1).y
-    overlay_transparent(frame, sticker, max(0, int(x - st_width//2)), max(0, int(y - st_height//2)))
+
+    st_x = x - st_width//2
+    st_y = y - st_height//2
+    if st_x < 0:
+        sticker = sticker[:, 0 - st_x:st_width]
+        st_x = 0
+    if st_y < 0:
+        sticker = sticker[0 - st_y:st_height, :]
+        st_y = 0
+    overlay_transparent(frame, sticker, max(0, st_x), max(0, st_y))
 
 def placePigNose(landmarks, frame):
     sticker = cv.imread("pig.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    rep_width = abs(landmarks.part(36).y - landmarks.part(32).y)
+    rep_width = abs(landmarks.part(36 - 1).x - landmarks.part(32 - 1).x)
 
-    sticker = image_resize(sticker, width=rep_width)
+    sticker = image_resize(sticker, width=(int)(rep_width  * 1.6))
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(
-        0, int(x - st_width//2 + 15)), max(0, int(y - st_height//2 - 10)))
+    x = landmarks.part(31 - 1).x 
+    y = landmarks.part(31 - 1).y 
+
+    st_x = x - st_width//2
+    st_y = y - st_height//2
+    if st_x < 0:
+        sticker = sticker[:, 0 - st_x:st_width]
+        st_x = 0
+    if st_y < 0:
+        sticker = sticker[0 - st_y:st_height, :]
+        st_y = 0
+
+    overlay_transparent(frame, sticker, max(0, st_x), max(0, st_y))
 
 def placeDogNose(landmarks, frame):
     sticker = cv.imread("dogNose.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    rep_width = abs(landmarks.part(36).y - landmarks.part(32).y)
+    rep_width = abs(landmarks.part(36 - 1).x - landmarks.part(32 - 1).x)
 
-    sticker = image_resize(sticker, width=rep_width)
+    sticker = image_resize(sticker, width= int (rep_width * 1.6))
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(
-        0, int(x - st_width//2 + 15)), max(0, int(y - st_height//2 - 10)))
+
+    x = landmarks.part(31 - 1).x 
+    y = landmarks.part(31 - 1).y 
+
+    st_x = x - st_width//2
+    st_y = y - st_height//2
+    if st_x < 0:
+        sticker = sticker[:, 0 - st_x:st_width]
+        st_x = 0
+    if st_y < 0:
+        sticker = sticker[0 - st_y:st_height, :]
+        st_y = 0
+
+    overlay_transparent(frame, sticker, max(0, st_x), max(0, st_y))
 
 def placeDogEars(landmarks, frame):
-    sticker = cv.imread("dogEars.png", cv.IMREAD_UNCHANGED)
-    height, width, _ = sticker.shape
+    sticker_right = cv.imread("dogEars_right.png", cv.IMREAD_UNCHANGED)
+    sticker_left = cv.imread("dogEars_left.png", cv.IMREAD_UNCHANGED)
 
-    rep_width = abs(landmarks.part(1).y - landmarks.part(17).y)
-    sticker = image_resize(sticker, width=rep_width*6)
+    rep_width = abs(landmarks.part(22 - 1).x - landmarks.part(18 - 1).x)
+    sticker_right = image_resize(sticker_right, width= int (rep_width * 1.5))
 
-    st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(
-        0, int(x - st_width//2 )), max(0, int(y - st_height//2 - 200)))
+    rep_width = abs(landmarks.part(23 - 1).x - landmarks.part(27 - 1).x)
+    sticker_left = image_resize(sticker_left, width= int (rep_width * 1.5))
+
+    st_height, st_width, _ = sticker_right.shape
+    x = landmarks.part(18 - 1).x 
+    y = landmarks.part(20 - 1).y - abs(landmarks.part(20 - 1).y - landmarks.part(2 - 1).y)
+    st_x = x - st_width//2
+    st_y = y - st_height//2
+    if st_y < 0:
+        sticker_right = sticker_right[0 - st_y:st_height, :]
+        st_y = 0
+    if st_x < 0:
+        sticker_right = sticker_right[:, 0 - st_x:st_width]
+        st_x = 0
+    overlay_transparent(frame, sticker_right, max(0, st_x), max(0, st_y))
+
+    st_height, st_width, _ = sticker_left.shape
+    x = landmarks.part(27 - 1).x 
+    y = landmarks.part(25 - 1).y - abs(landmarks.part(25 - 1).y - landmarks.part(16 - 1).y)
+    st_x = x - st_width//2
+    st_y = y - st_height//2
+    if st_y < 0:
+        sticker_left = sticker_left[0 - st_y:st_height, :]
+        st_y = 0
+    overlay_transparent(frame, sticker_left, max(0, st_x), max(0, st_y))
+    
+
+    
+    
 
 def placeDog(landmarks, frame):
     placeDogNose(landmarks, frame)
@@ -181,10 +249,23 @@ def placeBeard(landmarks, face):
     sticker = cv.imread("beard.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    rep_width = abs(landmarks.part(15).y - landmarks.part(3).y)
-    sticker = image_resize(sticker, width=rep_width*4)
+    rep_width = abs(landmarks.part(14 - 1).x - landmarks.part(4 - 1).x)
+    sticker = image_resize(sticker, width=rep_width)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 100)))
+
+    x = landmarks.part(9 - 1).x 
+    y = landmarks.part(9 - 1).y 
+
+    st_x = x - st_width//2
+    st_y = y - st_height//2
+    if st_x < 0:
+        sticker = sticker[:, 0 - st_x:st_width]
+        st_x = 0
+    if st_y < 0:
+        sticker = sticker[0 - st_y:st_height, :]
+        st_y = 0
+
+    overlay_transparent(frame, sticker, max(0, st_x), max(0, st_y))
 
 if __name__ == "__main__":
     if (len(sys.argv) != 2):
