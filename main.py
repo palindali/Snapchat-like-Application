@@ -1,6 +1,8 @@
 import cv2 as cv
 import numpy as np
+import math
 import dlib
+import imutils
 import sys
 
 def overlay_transparent(background, overlay, x, y):
@@ -71,18 +73,42 @@ def image_resize(image, width=None, height=None, inter=cv.INTER_AREA):
     return resized
 
 
+def rotate(origin, point, angle):
+    """
+    Rotate a point counterclockwise by a given angle around a given origin.
+
+    The angle should be given in radians.
+    """
+    ox, oy = origin
+    px, py = point
+
+    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    return qx, qy
+
 def placeFlower(landmarks, frame):
     sticker = cv.imread("flowers.png", cv.IMREAD_UNCHANGED)
-    height, width, _ = sticker.shape
+    
+    y_x = (landmarks.part(17 - 1).y - landmarks.part(1 - 1).y)/(landmarks.part(17 - 1).x - landmarks.part(1 - 1).x)
+    angle = (np.arctan(y_x)*180)/np.pi
+    sticker = imutils.rotate_bound(sticker, angle)
 
     rep_width = abs(landmarks.part(1 - 1).x - landmarks.part(17 - 1).x)
     sticker = image_resize(sticker, width=int(1.4*rep_width))
+
+
     st_height, st_width, _ = sticker.shape
 
-    x = abs(landmarks.part(1 - 1).x + landmarks.part(17 - 1).x)//2
+    x = (landmarks.part(1 - 1).x + landmarks.part(17 - 1).x)//2
     y = landmarks.part(25 - 1).y + (landmarks.part(28 - 1).y - landmarks.part(34 - 1).y)
+   
+    x, y = rotate((landmarks.part(31 - 1).x,
+                   landmarks.part(31 - 1).y), (x, y), np.arctan(y_x))
+    x, y = int(x), int(y)
+   
     st_x = x - st_width//2
     st_y = y - st_height//2
+
     if st_x < 0:
         sticker = sticker[:, 0 - st_x:st_width]
         st_x = 0
@@ -90,12 +116,18 @@ def placeFlower(landmarks, frame):
         sticker = sticker[0 - st_y:st_height, :]
         st_y = 0
 
+    
     overlay_transparent(frame, sticker, st_x, st_y)
+    cv.circle(frame, (x, y), 4, (255, 255, 255), -1)
 
 
 def placeHearts(landmarks, frame):
     sticker = cv.imread("hearts.png", cv.IMREAD_UNCHANGED)
-    height, width, _ = sticker.shape
+
+    y_x = (landmarks.part(17 - 1).y - landmarks.part(1 - 1).y) / \
+        (landmarks.part(17 - 1).x - landmarks.part(1 - 1).x)
+    angle = (np.arctan(y_x)*180)/np.pi
+    sticker = imutils.rotate_bound(sticker, angle)
 
     rep_width = abs(landmarks.part(1 - 1).x - landmarks.part(17 - 1).x)
     sticker = image_resize(sticker, width=int(1.4*rep_width))
@@ -104,6 +136,11 @@ def placeHearts(landmarks, frame):
     x = abs(landmarks.part(1 - 1).x + landmarks.part(17 - 1).x)//2
     y = landmarks.part(25 - 1).y + \
         (landmarks.part(28 - 1).y - landmarks.part(34 - 1).y)
+    
+    x, y = rotate((landmarks.part(31 - 1).x,
+                   landmarks.part(31 - 1).y), (x, y), np.arctan(y_x))
+    x, y = int(x), int(y)
+
     st_x = x - st_width//2
     st_y = y - st_height//2
     if st_x < 0:
@@ -213,7 +250,7 @@ if __name__ == "__main__":
             for n in range(0, 68):
                 x = landmarks.part(n).x
                 y = landmarks.part(n).y
-                # cv.circle(frame, (x, y), 4, (3*n, 3*n, 0), -1)
+                cv.circle(frame, (x, y), 4, (3*n, 3*n, 0), -1)
 
             x = landmarks.part(31).x
             y = landmarks.part(31).y
