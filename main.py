@@ -98,24 +98,27 @@ def placeLips(landmarks, frame):
     sticker = cv.imread("lips.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    rep_width = abs(landmarks.part(55).y - landmarks.part(49).y)
+    rep_width = abs(landmarks.part(55 - 1).x - landmarks.part(49 - 1).x)
 
-    sticker = image_resize(sticker, width=rep_width*5)
+    sticker = image_resize(sticker, width=rep_width)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(
-        0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 + 30)))
+    x = abs( landmarks.part(63-1).x )
+    y = landmarks.part(67 - 1).y
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2)), max(0, int(y - st_height//2)))
 
 
 def placeGlasses(landmarks, frame):
     sticker = cv.imread("glasses.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
-    rep_width = abs(landmarks.part(27).y - landmarks.part(18).y)
+    # rep_width = abs(landmarks.part(27 - 1).x - landmarks.part(18 - 1).x)
+    rep_width = abs(landmarks.part(17 - 1).x - landmarks.part(1 - 1).x)
 
-    sticker = image_resize(sticker, width=rep_width * 8)
+    sticker = image_resize(sticker, width=rep_width)
     st_height, st_width, _ = sticker.shape
-    overlay_transparent(frame, sticker, max(
-        0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 - 90)))
+    x = landmarks.part(28 - 1).x
+    y = landmarks.part(28 - 1).y
+    overlay_transparent(frame, sticker, max(0, int(x - st_width//2)), max(0, int(y - st_height//2)))
 
 
 def placePigNose(landmarks, frame):
@@ -148,9 +151,10 @@ def placeDogEars(landmarks, frame):
 
     rep_width = abs(landmarks.part(1).y - landmarks.part(17).y)
     sticker = image_resize(sticker, width=rep_width*6)
+
     st_height, st_width, _ = sticker.shape
     overlay_transparent(frame, sticker, max(
-        0, int(x - st_width//2 + 20)), max(0, int(y - st_height//2 - 200)))
+        0, int(x - st_width//2 )), max(0, int(y - st_height//2 - 200)))
 
 
 def placeDog(landmarks, frame):
@@ -170,6 +174,7 @@ def placeBeard(landmarks, face):
 
 if __name__ == "__main__":
     if (len(sys.argv) != 2):
+        print("Wrong parameters")
         exit()
 
     cap = cv.VideoCapture(0)
