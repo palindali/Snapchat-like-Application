@@ -71,7 +71,7 @@ def image_resize(image, width=None, height=None, inter=cv.INTER_AREA):
     return resized
 
 
-def placeFlower(frame, face, landmarks):
+def placeFlower(landmarks, frame):
     sticker = cv.imread("flowers.png", cv.IMREAD_UNCHANGED)
     height, width, _ = sticker.shape
 
@@ -219,7 +219,7 @@ if __name__ == "__main__":
             y = landmarks.part(31).y
 
             if (sys.argv[1] == "flower"):
-                placeFlower(frame, face, landmarks)
+                placeFlower(landmarks, frame)
             elif (sys.argv[1] == "lips"):
                 placeLips(landmarks, frame)
             elif (sys.argv[1] == "hearts"):
