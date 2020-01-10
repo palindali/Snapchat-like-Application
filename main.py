@@ -383,7 +383,7 @@ if __name__ == "__main__":
             for n in range(0, 68):
                 x = landmarks.part(n).x
                 y = landmarks.part(n).y
-                # cv.circle(frame, (x, y), 4, (3*n, 3*n, 0), -1)
+                cv.circle(frame, (x, y), 4, (3*n, 3*n, 0), -1)
 
             x = landmarks.part(31).x
             y = landmarks.part(31).y
