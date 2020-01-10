@@ -1,6 +1,8 @@
 # Snapchat-like-Application
-Computer Vision course final project.\\
-A snapchat-like application with 7 different options for stickers. The application works in real-time using the computer's web-cam. \\
+Computer Vision course final project.
+
+A snapchat-like application with 7 different options for stickers. The application works in real-time using the computer's web-cam. 
+
 Here are Sample Outputs with the terminal command to run the application: 
 
 ![](Output_Images/Flower.png)
